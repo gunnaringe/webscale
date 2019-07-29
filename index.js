@@ -2,13 +2,11 @@ var HID = require('node-hid');
 var util = require('util');
 var events = require('events');
 
-var VENDOR_ID = 9332;
-var PRODUCT_ID = 1360;
-
-
-function WebScale(deviceIndex){
+function WebScale(deviceIndex=0, vendorId=9332, productId=1360){
+    this._deviceIndex = deviceIndex;
+    this._vendorId = vendorId;
+    this._productId = productId;
     this._prevWeight = null;
-    this._deviceIndex = deviceIndex || 0;
     this._device = null;
 
     this._connectWithRetry();
@@ -33,7 +31,7 @@ WebScale.prototype._connectWithRetry = function(){
 };
 
 WebScale.prototype._connect = function(){
-    var devices = HID.devices(VENDOR_ID, PRODUCT_ID);
+    var devices = HID.devices(this._vendorId, this._productId);
 
     if(!devices.length || !devices[this._deviceIndex]){
 	this.emit('disconnected');
